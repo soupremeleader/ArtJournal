@@ -8,13 +8,21 @@ use Illuminate\Support\Facades\DB;
 class PageController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index($number) {
-//        return view('pages', compact('number'));
         $text_blocks = DB::table('text_blocks')
             ->get();
-//        dd($text_blocks);
         return view('pages', compact('number'))->with('text_blocks', $text_blocks);
     }
 

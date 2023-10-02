@@ -15,5 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::resource('/pages/{number}', PageController::class);
+Route::get('/pages/{number}', [PageController::class, 'index']);
 Route::resource('textblocks', TextBlockController::class);
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
