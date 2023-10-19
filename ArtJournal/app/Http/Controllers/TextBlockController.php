@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TextBlock;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -45,6 +46,9 @@ class TextBlockController extends Controller
         $textBlock->height = $request->height;
         $textBlock->pos_x = $request->pos_x;
         $textBlock->pos_y = $request->pos_y;
+        $user_id = Auth::id();
+        $textBlock->user_id = $user_id;
+        $textBlock->page_id = $request->route('number');
         $textBlock->save();
         return redirect()->back();
     }

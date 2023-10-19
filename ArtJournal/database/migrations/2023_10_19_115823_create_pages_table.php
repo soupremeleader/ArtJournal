@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('text_blocks', function (Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('width');
-            $table->integer('height');
-            $table->integer('pos_x');
-            $table->integer('pos_y');
-            $table->text('content');
             $table->foreignId('user_id');
-            $table->foreignId('page_id');
+            $table->string('name');
+            $table->integer('page_number');
 
             $table->timestamps();
         });
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('text_blocks');
+        Schema::dropIfExists('pages');
     }
 };

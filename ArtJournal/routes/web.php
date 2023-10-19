@@ -15,9 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/pages/{number}', [PageController::class, 'index']);
-Route::resource('textblocks', TextBlockController::class);
-
 Auth::routes();
 
+Route::get('/pages/index/{number}', [PageController::class, 'index'])->name('pages.index');
+Route::get('/pages/new', [PageController::class, 'create']);
+Route::post('/pages/store', [PageController::class, 'store'])->name('pages.store');
+//Route::resource('textblocks', TextBlockController::class);
+Route::post('textblocks/store/{number}', [TextBlockController::class, 'store'])->name('textblocks.store');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
