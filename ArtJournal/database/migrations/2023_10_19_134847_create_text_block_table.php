@@ -19,8 +19,12 @@ return new class extends Migration
             $table->integer('pos_x');
             $table->integer('pos_y');
             $table->text('content');
-            $table->foreignId('user_id');
-            $table->foreignId('page_id');
+
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('page_id');
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
 
             $table->timestamps();
         });

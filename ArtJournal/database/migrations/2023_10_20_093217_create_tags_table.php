@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pages', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('user_id');
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('name');
-            $table->integer('page_number');
-
+            $table->string('tag_name');
             $table->timestamps();
         });
     }
@@ -29,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pages');
+        Schema::dropIfExists('tags');
     }
 };
