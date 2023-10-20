@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TextBlockController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,7 @@ Auth::routes();
 Route::get('/pages/index/{number}', [PageController::class, 'index'])->name('pages.index');
 Route::get('/pages/new', [PageController::class, 'create']);
 Route::post('/pages/store', [PageController::class, 'store'])->name('pages.store');
+Route::post('/tags/get', [TagController::class, 'show']);
 //Route::resource('textblocks', TextBlockController::class);
 Route::post('textblocks/store/{number}', [TextBlockController::class, 'store'])->name('textblocks.store');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -33,7 +33,7 @@ class PageController extends Controller
      * Show the form for creating a new resource.
      */
     public function create() {
-        $min_page_nr = 1;
+        $min_page_nr = 0;
         if (DB::table('pages')->min('page_number') !== null) {
             $min_page_nr = DB::table('pages')->min('page_number');
         }
@@ -53,6 +53,7 @@ class PageController extends Controller
         }
         $page->page_number = $min_page_nr + 1;
         $page->user_id = $user_id;
+
         $page->save();
         return view('pages');
     }
