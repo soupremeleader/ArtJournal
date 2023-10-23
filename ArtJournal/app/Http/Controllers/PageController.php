@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Page;
+use App\Models\Tag;
+use App\Models\PageTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class PageController extends Controller
 {
@@ -47,15 +50,35 @@ class PageController extends Controller
         $user_id = Auth::id();
         $page = new Page;
         $page->name = $request->page_title;
-        $min_page_nr = 1;
+        $min_page_nr = 0;
         if (DB::table('pages')->min('page_number') !== null) {
             $min_page_nr = DB::table('pages')->min('page_number');
         }
-        $page->page_number = $min_page_nr + 1;
+        $min_page_nr++;
+        $page->page_number = $min_page_nr;
         $page->user_id = $user_id;
-
         $page->save();
-        return view('pages');
+
+        if(DB::table('tags')
+        ->where('tag_name', '=', $request->tags_input)
+        ->count() === 0) {
+            $tag = new Tag;
+            $tag->tag_name = $request->tags_input;
+            $tag->save();
+        }
+
+        $tags = DB::table('tags')
+            ->where('tag_name', '=', $request->tags_input)
+            ->get();
+
+        $page_tag = new PageTag;
+        $page_tag->page_id = $page->id;
+        $page_tag->tag_id = $tags[0]->id;
+        $page_tag->save();
+
+
+
+        return Redirect::route('pages.index', $min_page_nr);
     }
 
     /**

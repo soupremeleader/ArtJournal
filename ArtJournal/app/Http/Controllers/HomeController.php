@@ -26,9 +26,14 @@ class HomeController extends Controller
     public function index()
     {
         $id = Auth::id();
-        $pages = DB::table('pages')
-            ->where('user_id', '=', $id)
-            ->get();
-        return view('home')->with('pages', $pages);
+
+       $tags = DB::table('pages')
+           ->join('page_tags', 'page_tags.page_id', '=', 'pages.id')
+           ->join('tags', 'tags.id', '=', 'page_tags.tag_id')
+           ->where('pages.user_id', '=', $id)
+           ->select('pages.*', 'tags.*')
+           ->get();
+//       dd($tags);
+        return view('home')->with('tags', $tags);
     }
 }
