@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TextBlockController;
@@ -22,6 +23,7 @@ Route::get('/pages/index/{number}', [PageController::class, 'index'])->name('pag
 Route::get('/pages/new', [PageController::class, 'create']);
 Route::post('/pages/store', [PageController::class, 'store'])->name('pages.store');
 Route::post('/tags/get', [TagController::class, 'show']);
+Route::get('/get', [HomeController::class, 'show']);
 //Route::resource('textblocks', TextBlockController::class);
 Route::post('textblocks/store/{number}', [TextBlockController::class, 'store'])->name('textblocks.store');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

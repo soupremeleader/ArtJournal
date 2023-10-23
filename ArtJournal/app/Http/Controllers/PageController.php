@@ -27,6 +27,7 @@ class PageController extends Controller
      */
     public function index($number) {
         $text_blocks = DB::table('text_blocks')
+            ->where('page_id', '=', $number)
             ->get();
         return view('pages', compact('number'))->with('text_blocks', $text_blocks);
     }

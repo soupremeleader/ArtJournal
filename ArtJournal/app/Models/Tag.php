@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     use HasFactory;
+
+    function pages() {
+        return $this->belongsToMany(Page::class);
+    }
 }
