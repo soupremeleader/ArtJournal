@@ -24,6 +24,8 @@ Route::get('/pages/index/{number}', [PageController::class, 'index'])->name('pag
 Route::get('/pages/new', [PageController::class, 'create']);
 Route::post('/pages/store', [PageController::class, 'store'])->name('pages.store');
 Route::get('pages/delete/{user}/{page_number}', [PageController::class, 'destroy'])->name('pages.delete');
+Route::get('pages/edit/{user}/{page_number}', [PageController::class, 'edit'])->name('pages.edit');
+Route::post('pages/update/{user}/{page_number}', [PageController::class, 'update'])->name('pages.update');
 Route::post('/tags/get', [TagController::class, 'show']);
 Route::get('/get', [HomeController::class, 'show']);
 Route::get('/MyJournal/{user}', [MyJournalController::class, 'index'])->name('MyJournal');

@@ -38,7 +38,7 @@ class PageController extends Controller
         if (DB::table('pages')->min('page_number') !== null) {
             $min_page_nr = DB::table('pages')->min('page_number');
         }
-        return view('createPages')->with('potential_title', $min_page_nr + 1);
+        return view('createPages')->with('potential_title', $min_page_nr + 1)->with('edit');
     }
 
     /**
@@ -94,15 +94,43 @@ class PageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id) {
-        //
+    public function edit(string $user, int $page_number) {
+        $page = Page::join('users', 'users.id', '=', 'pages.user_id')
+            ->join('page_tags', 'page_tags.page_id', '=', 'pages.id')
+            ->join('tags', 'page_tags.tag_id', '=', 'tags.id')
+            ->where('users.name', '=', $user)
+            ->where('pages.page_number', '=', $page_number)
+            ->first();
+
+        return view('createPages', compact('user', 'page_number'))->with('potential_title', $page)->with('edit', true);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id) {
-        //
+    public function update(Request $request, string $user, int $page_number) {
+        if(DB::table('tags')
+                ->where('tag_name', '=', $request->tags_input)
+                ->count() === 0) {
+            $tag = new Tag;
+            $tag->tag_name = $request->tags_input;
+            $tag->save();
+        }
+
+        $tag = Tag::where('tag_name', '=', $request->tags_input)
+            ->first();
+
+        Page::join('users', 'users.id', '=', 'pages.user_id')
+            ->join('page_tags', 'page_tags.page_id', '=', 'pages.id')
+            ->where('users.name', '=', $user)
+            ->where('pages.page_number', '=', $page_number)
+            ->update(
+                ['pages.page_name' => $request->page_title,
+                    'page_tags.tag_id' => $tag->id,
+                ]
+            );
+
+        return Redirect::to($request->request->get('http_referrer'));
     }
 
     /**

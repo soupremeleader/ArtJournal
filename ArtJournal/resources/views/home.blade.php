@@ -11,7 +11,7 @@
         </h1>
     @else
         <h1>Create new page
-            <a href={{ route('Login') }}> <img src="{{ asset('img/plus-solid.svg') }}" alt="+"> </a>
+            <a href={{ route('login') }}> <img src="{{ asset('img/plus-solid.svg') }}" alt="+"> </a>
         </h1>
     @endif
 
@@ -37,8 +37,12 @@
         @foreach ($tags as $tag)
             <a href="{{ route('pages.index', $tag->page_number) }}">{{$tag->page_name}}</a>
             @if ($userName === $tag->name)
+                <a href="{{route('pages.edit', [$userName, $tag->page_number])}}">edit</a>
+            @endif
+            @if($userName === $tag->name || $isAdmin)
                 <a href="{{route('pages.delete', [$userName, $tag->page_number])}}">delete</a>
             @endif
+
             <a href="{{route('MyJournal', $tag->name)}}">{{$tag->name}}</a>
             <p>{{$tag->tag_name}}</p>
         @endforeach

@@ -9,45 +9,39 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class HomeController extends Controller
+class MyJournalController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-    }
-
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index() {
-        $tags = Page::join('page_tags', 'page_tags.page_id', '=', 'pages.id')
-            ->join('tags', 'tags.id', '=', 'page_tags.tag_id')
-            ->join('users', 'pages.user_id', '=', 'users.id')
-            ->select('pages.*', 'tags.*', 'users.name')
-            ->get();
-
-        $existingTags = Tag::select('tags.*')->get();
+    public function index($user) {
+        $users = User::where("name", '=', $user)
+        ->first();
 
         $isLoggedIn = Auth::check();
         $userName = null;
-        $isAdmin = null;
         if ($isLoggedIn) {
             $userName = User::where('id', '=', Auth::id())->first();
-            $isAdmin = $userName->isAdmin;
             $userName = $userName->name;
         }
 
+        $existingTags = Tag::select('tags.*')->get();
+
+        $tags = Page::join('page_tags', 'page_tags.page_id', '=', 'pages.id')
+            ->join('tags', 'tags.id', '=', 'page_tags.tag_id')
+            ->join('users', 'users.id', '=', 'pages.user_id')
+            ->where('pages.user_id', '=', $users->id)
+            ->select('pages.*', 'tags.*', 'users.name')
+            ->get();
+
+//        dd($tags);
         return view('home')
             ->with('tags', $tags)
             ->with('filter')
             ->with('isLoggedIn', $isLoggedIn)
             ->with('userName', $userName)
-            ->with('isAdmin', $isAdmin)
             ->with('existingTags', $existingTags);
     }
 
@@ -67,6 +61,7 @@ class HomeController extends Controller
                 ->join('pages', 'page_tags.page_id', '=', 'pages.id')
                 ->join('users', 'pages.user_id', '=', 'users.id')
                 ->where('pages.page_name', 'like', '%'.$request->filterInput.'%')
+                ->where('pages.user_id', '=', Auth::id())
                 ->select('pages.*', 'tags.*', 'users.name')
                 ->get();
         } else {
@@ -75,6 +70,7 @@ class HomeController extends Controller
                 ->join('pages', 'page_tags.page_id', '=', 'pages.id')
                 ->join('users', 'pages.user_id', '=', 'users.id')
                 ->where('pages.page_name', 'like', '%' . $request->filterInput . '%')
+                ->where('pages.user_id', '=', Auth::id())
                 ->select('pages.*', 'tags.*', 'users.name')
                 ->get();
         }
