@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Page;
 use App\Models\Tag;
 use App\Models\PageTag;
+use App\Models\TextBlock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,24 +13,20 @@ use Illuminate\Support\Facades\Redirect;
 
 class PageController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.
      */
     public function index($number) {
-        $text_blocks = DB::table('text_blocks')
-            ->where('page_id', '=', $number)
+        $text_blocks = TextBlock::where('page_id', '=', $number)
             ->get();
-        return view('pages', compact('number'))->with('text_blocks', $text_blocks);
+
+        $page = Page::where('id', '=', $number)
+            ->first();
+
+        $isOwner = Auth::id() === $page->user_id;
+//        dd($page_user_id);
+        return view('pages', compact('number'))->with('text_blocks', $text_blocks)->with('isOwner', $isOwner);
     }
 
 
@@ -50,13 +47,13 @@ class PageController extends Controller
     public function store(Request $request) {
         $user_id = Auth::id();
         $page = new Page;
-        $page->name = $request->page_title;
-        $min_page_nr = 0;
-        if (DB::table('pages')->min('page_number') !== null) {
-            $min_page_nr = DB::table('pages')->min('page_number');
+        $page->page_name = $request->page_title;
+        $max_page_nr = 0;
+        if (DB::table('pages')->max('page_number') !== null) {
+            $max_page_nr = DB::table('pages')->max('page_number');
         }
-        $min_page_nr++;
-        $page->page_number = $min_page_nr;
+        $max_page_nr++;
+        $page->page_number = $max_page_nr;
         $page->user_id = $user_id;
         $page->save();
 
@@ -79,7 +76,7 @@ class PageController extends Controller
 
 
 
-        return Redirect::route('pages.index', $min_page_nr);
+        return Redirect::route('pages.index', $max_page_nr);
     }
 
     /**
@@ -89,7 +86,9 @@ class PageController extends Controller
         $text_blocks = DB::table('text_blocks')
             ->where('page_number', '=', $number)
             ->get();
-        return view('pages', compact('number'))->with('text_blocks', $text_blocks);
+
+        $isOwner = Auth::id() === $text_blocks->id;
+        return view('pages', compact('number'))->with('text_blocks', $text_blocks)->with('isOwner', $isOwner);
     }
 
     /**
@@ -109,7 +108,11 @@ class PageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id) {
-        //
+    public function destroy(string $user, int $page_number) {
+        Page::join('users', 'users.id', '=', 'pages.user_id')
+            ->where('users.name', '=', $user)
+            ->where('pages.page_number', '=', $page_number)
+            ->delete();
+        return back()->withInput();
     }
 }

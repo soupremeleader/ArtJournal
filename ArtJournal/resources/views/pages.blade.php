@@ -11,9 +11,15 @@
 <body id="body">
 <h1>{{ $number }}</h1>
 @if($text_blocks !== null)
-    @foreach ($text_blocks as $text_block)
-        <p>{{$text_block->content}}</p>
-    @endforeach
+    @if($isOwner)
+        @foreach ($text_blocks as $text_block)
+            <input type="text" value={{$text_block->content}}>
+        @endforeach
+    @else
+        @foreach ($text_blocks as $text_block)
+            <p>{{$text_block->content}}</p>
+        @endforeach
+    @endif
 @endif
 <form id="text-editor" method="POST" action="{{route("textblocks.store", $number)}}">
     @csrf
