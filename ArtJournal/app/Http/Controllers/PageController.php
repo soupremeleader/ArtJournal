@@ -65,23 +65,23 @@ class PageController extends Controller
         } else {
             $page->is_public = false;
         }
-        $page->save();
 
-        if (User::join('pages', 'pages.user_id', '=', 'users.id')
-                ->count() < 5) {
-            return view('createPages')
-                ->with('potential_title', $request->page_title)
-                ->with('error', "You have not created enough pages yet to make a new tag!")
-                ->with('edit');
-        }
 
         if (DB::table('tags')
                 ->where('tag_name', '=', $request->tags_input)
                 ->count() === 0) {
+            if (User::join('pages', 'pages.user_id', '=', 'users.id')
+                    ->count() < 5) {
+                return view('createPages')
+                    ->with('potential_title', $request->page_title)
+                    ->with('error', "You have not created enough pages yet to make a new tag!")
+                    ->with('edit');
+            }
             $tag = new Tag;
             $tag->tag_name = $request->tags_input;
             $tag->save();
         }
+        $page->save();
 
         $tags = DB::table('tags')
             ->where('tag_name', '=', $request->tags_input)
@@ -119,7 +119,7 @@ class PageController extends Controller
             ->where('pages.page_number', '=', $page_number)
             ->first();
 
-        return view('createPages', compact('user', 'page_number'))->with('potential_title', $page)->with('edit', true);
+        return view('createPages', compact('user', 'page_number'))->with('potential_title', $page)->with('edit', true)->with('error');
     }
 
     /**

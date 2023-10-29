@@ -28,6 +28,8 @@ class HomeController extends Controller
         $tags = Page::join('page_tags', 'page_tags.page_id', '=', 'pages.id')
             ->join('tags', 'tags.id', '=', 'page_tags.tag_id')
             ->join('users', 'pages.user_id', '=', 'users.id')
+            ->where('pages.is_public', '=', '1')
+            ->orwhere('pages.user_id', '=', Auth::id())
             ->select('pages.*', 'tags.*', 'users.name')
             ->get();
 
