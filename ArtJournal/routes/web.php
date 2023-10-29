@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/pages/index/{number}', [PageController::class, 'index'])->name('pages.index');
-Route::get('/pages/new', [PageController::class, 'create']);
+Route::get('/pages/new', [PageController::class, 'create'])->name('pages.new');
 Route::post('/pages/store', [PageController::class, 'store'])->name('pages.store');
 Route::get('pages/delete/{user}/{page_number}', [PageController::class, 'destroy'])->name('pages.delete');
 Route::get('pages/edit/{user}/{page_number}', [PageController::class, 'edit'])->name('pages.edit');

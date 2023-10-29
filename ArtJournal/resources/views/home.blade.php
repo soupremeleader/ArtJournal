@@ -7,7 +7,7 @@
         <a href="{{route('MyJournal', $userName)}}">My Journal</a>
 
         <h1>Create new page
-            <a href="/pages/new"> <img src="{{ asset('img/plus-solid.svg') }}" alt="+"> </a>
+            <a href={{route("pages.new")}}> <img src="{{ asset('img/plus-solid.svg') }}" alt="+"> </a>
         </h1>
     @else
         <h1>Create new page
