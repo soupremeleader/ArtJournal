@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MyJournalController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\TextBlockController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +18,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Auth::routes();
+
+Route::get('/pages/index/{number}', [PageController::class, 'index'])->name('pages.index');
+Route::get('/pages/new', [PageController::class, 'create'])->name('pages.new');
+Route::post('/pages/store', [PageController::class, 'store'])->name('pages.store');
+Route::get('pages/delete/{user}/{page_number}', [PageController::class, 'destroy'])->name('pages.delete');
+Route::get('pages/edit/{user}/{page_number}', [PageController::class, 'edit'])->name('pages.edit');
+Route::post('pages/update/{user}/{page_number}', [PageController::class, 'update'])->name('pages.update');
+Route::post('/tags/get', [TagController::class, 'show']);
+Route::get('/get', [HomeController::class, 'show']);
+Route::get('/MyJournal/{user}', [MyJournalController::class, 'index'])->name('MyJournal');
+Route::get('/MyJournal/get/{user}', [MyJournalController::class, 'show'])->name('MyJournal');
+//Route::resource('textblocks', TextBlockController::class);
+Route::post('textblocks/store/{number}', [TextBlockController::class, 'store'])->name('textblocks.store');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
